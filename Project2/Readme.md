@@ -71,9 +71,8 @@
 ## 최종 결과물
 
 - **AI 과실비율 예측 시스템**: 교통사고 과실비율을 예측하고 분쟁을 최소화할 수 있는 AI 시스템 완성.
-- **시연 영상**: [시연 영상 링크](https://drive.google.com/file/d/1GT9z2cfU9GNjZHxwVoinn8e3m05QBikh/view?usp=drive_link)
-- **PPT 발표**: [ppt발표영상링크](https://drive.google.com/file/d/1CMILLA6iJWo_ma9ibL3tYU-oceJugeIL/view?usp=drive_link)
-- **Code review**: [code리뷰](https://drive.google.com/file/d/1yLOLvdXlhYuhD6137TrPbCTkgr9LeAoJ/view?usp=drive_link)
+- **PPT 발표 및 시연 영상**: [ppt발표영상링크](https://drive.google.com/file/d/1nfLIIC_QVpXkBvU0czOBoAgBFfDMRt8a/view?usp=drive_link)
+- **Code review**: [code리뷰](https://drive.google.com/file/d/18IFahFGuCWRiJHRqX3nRpSnIPqp_MGul/view?usp=drive_link)
 ---
 
 ## 기술 스택
