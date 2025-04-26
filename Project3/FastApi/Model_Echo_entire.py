@@ -30,7 +30,7 @@ from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 
 model = "gpt-4o-mini-2024-07-18"
-OPENAI_API_KEY = 'sk-32Hy05kcT20IRbH3Zq9V7_AEWBdOYDCBjkUnN8F_8xT3BlbkFJEHFX7Zv6CKTpL862SnCbFplyJ6sC5Zs2AN1uyoGwsA'
+OPENAI_API_KEY = '키 필요'
 os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
 client = OpenAI(api_key=OPENAI_API_KEY)
 
