@@ -9,7 +9,7 @@ from pymongo import MongoClient
 import pprint
 import os
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = 'API 키 필요'
 # MongoDB 연결 설정
 uri = "mongodb+srv://yoonsun2596:qwer1234@tm2.hl7a3.mongodb.net/"
 db_client = MongoClient(uri)
