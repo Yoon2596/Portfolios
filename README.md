@@ -1,3 +1,7 @@
 # Portfolios
 
-- 국비 교육을 받을 때 제작 했던 결과물입니다
+Project 1. 맛집
+
+Project 2. 교통사고
+
+Project 3. 반려견
