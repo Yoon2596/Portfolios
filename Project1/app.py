@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kita3:kita3@localhost:3306/kita3_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = '9546b2e2411510631a32f4d8b21268af8a2531055ddd5f9b'
+app.config['SECRET_KEY'] = '키 필요'
 
 db.init_app(app)
 migrate = Migrate(app, db)
