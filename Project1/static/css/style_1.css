@@ -1,0 +1,251 @@
+/* 전체 */
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    background-color: rgb(243, 165, 82);
+}
+
+ul {
+    list-style: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate;
+}
+
+li {
+    list-style: none;
+}
+
+a{
+    text-decoration: none;
+}
+
+header {
+    border-bottom: 1.5px solid black;
+    background-image:url(./images/img1.jpg);
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    overflow: visible;
+  }
+
+label {
+    cursor: pointer;
+    background-color: transparent;
+}
+
+#cat {
+    font-size: 7px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 헤더 div */
+.header_div {
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 5px;
+    text-align: center;
+    background-color: red;
+}
+
+/* 버튼 */
+#button-wrap {
+    margin-top: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.main-button {
+    width: 150px;
+    height: 60px;
+    font-size: 20px;
+    border-radius: 50%;
+    background-color: white;
+    border: 1.5px solid black;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.main-button:hover {
+    color: white;
+    background-color: gold;
+    border: 1.5px solid white;
+    transition: 0.3s all ease-in-out;
+}
+
+/* 메인 컨탠츠 전체 */
+.wrap {
+    width: 100%;
+}
+
+.main-title {
+    width: 90%;
+    margin: auto;
+    margin-top: 30px;
+}
+
+/* 메인 타이틀 간격 조정 */
+#main-title-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 메인 타이틀 div */
+.section-title {
+    width: 720px;
+    margin: 10px;
+    margin-top: 0px;
+    padding: 20px;
+    background-color: white;
+}
+
+/* 메인 배경 */
+.background-box {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* 메인 타이틀 */
+#main-title-list > li > div {
+    border-radius: 50px;
+}
+
+#main-title-list > li > div > h2 {
+    text-align: center;
+    background-color: white;
+}
+
+/* 메인 컨텐츠 */
+.main-contents {
+    width: 90%;
+    margin: auto;
+}
+
+#main-contents-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.section-contents {
+    width: 720px;
+    height: 700px;
+    margin: 10px;
+    padding: 20px;
+    background-color: white;
+}
+
+/* 모달창 */
+.modal{
+    width:100%;
+    height:1058px;
+    position:absolute;
+    display:none;
+    justify-content: center;
+    top:0;
+    left:0;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-body {
+    width: 1200px;
+    height: 900px;
+    background-color: white;
+    margin-top: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+}
+
+/* 모달창 나가기 버튼 */
+.button-wrap {
+    background-color: transparent;
+    display: flex;
+    justify-content: space-between;
+}
+
+#modal_title {
+    background-color: transparent;
+    text-align: center;
+    margin-top: 13px;
+    margin-left: 13px;
+    font-weight: bold;
+    padding-bottom: 15px;
+    padding-right: 80px;
+    font-size: 30px;
+}
+
+.modal_close {
+    width: 40px;
+    height: 50px;
+    font-size: 40px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background-color: transparent;
+    border-radius: 50%;
+}
+
+/* 닫기버튼 회전 */
+.modal_close:hover {
+    -webkit-animation:spin 0.8s linear;
+	-moz-animation:spin 0.8s linear;
+	animation:spin 0.8s linear;
+    color: orange;
+    transition: 0.6s;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+/* 음식 선택창 */
+.food_wrap {
+    height: 100%;
+    margin-left: 20px;
+    background-color: transparent;
+}
+
+.location, .category, .price {
+    height: 220px;
+    background-color: transparent;
+}
+
+/* 지역 */
+.location {
+    display: flex;
+}
+
+#location {
+    width: 320px;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid orange;
+    background-color: transparent;
+}
+
+#location_check1, #location_check2, #location_check3, #location_check4  {
+    background-color: transparent;
+}
+
+#gangnam, #sungsu, #yongsan, #mapo {
+    cursor: pointer;
+}
+
+#location_check2, #location_check3, #location_check4 {
+    margin-left: 30px;
+}
+

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지금 뭐먹지?</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=91816f78f13ae38c22e916ab32d7094e&libraries=services"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>지금 뭐먹지?</h1>
+            <p>캐치테이블 기반 추천이라고 작게 써두기</p>
+        </header>
+        <div class="filters">
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('region-dropdown')">지역</button>
+                <div id="region-dropdown" class="dropdown-content">
+                    <a href="#">강남구</a>
+                    <a href="#">마포구</a>
+                    <a href="#">용산구</a>
+                    <a href="#">성동구</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('category-dropdown')">음식 카테고리</button>
+                <div id="category-dropdown" class="dropdown-content">
+                    <a href="#">한식</a>
+                    <a href="#">일식</a>
+                    <a href="#">양식</a>
+                    <a href="#">중식</a>
+                    <a href="#">아시아음식</a>
+                    <a href="#">육류</a>
+                    <a href="#">퓨전</a>
+                    <a href="#">뷔페</a>
+                    <a href="#">주류</a>
+                    <a href="#">카페</a>
+                </div>
+            </div>
+            <div>
+                <label for="price-min">가격 최소:</label>
+                <input type="number" id="price-min" name="price-min" min="0">
+            </div>
+            <div>
+                <label for="price-max">가격 최대:</label>
+                <input type="number" id="price-max" name="price-max" min="0">
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="section">
+                <h2>선택 결과</h2>
+                <div class="card-container-1">
+                    <div class="card">
+                        <h5 class="card-title">Card title</h5>
+                        <h6 class="card-subtitle">Card subtitle</h6>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>캐치테이블내 대기장소</h2>
+                <div class="card-container-2">
+                    <div class="card">
+                        <h5 class="card-title">Card title</h5>
+                        <h6 class="card-subtitle">Card subtitle</h6>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="card-link">Card link</a>
+                    </div>
+                    <div class="card">
+                        <h5 class="card-title">Card title</h5>
+                        <h6 class="card-subtitle">Card subtitle</h6>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="card-link">Card link</a>
+
+                    </div>
+                    <div class="card">
+                        <h5 class="card-title">Card title</h5>
+                        <h6 class="card-subtitle">Card subtitle</h6>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>주변 대기장소</h2>
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleDropdown(id) {
+            var dropdown = document.getElementById(id);
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // 마커를 클릭하면 장소명을 표출할 인포윈도우입니다
+        var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = { 
+                center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+                level: 3 // 지도의 확대 레벨
+            };
+
+        // 지도를 생성합니다    
+        var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+        // 장소 검색 객체를 생성합니다
+        var ps = new kakao.maps.services.Places(); 
+
+        // 키워드로 장소를 검색합니다
+        ps.keywordSearch('이태원 맛집', placesSearchCB); 
+
+        // 키워드 검색 완료 시 호출되는 콜백함수입니다
+        function placesSearchCB(data, status, pagination) {
+            if (status === kakao.maps.services.Status.OK) {
+
+                // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해
+                // LatLngBounds 객체에 좌표를 추가합니다
+                var bounds = new kakao.maps.LatLngBounds();
+
+                for (var i = 0; i < data.length; i++) {
+                    displayMarker(data[i]);    
+                    bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                }       
+
+                // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                map.setBounds(bounds);
+            }
+        }
+
+        // 지도에 마커를 표시하는 함수입니다
+        function displayMarker(place) {
+            // 마커를 생성하고 지도에 표시합니다
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: new kakao.maps.LatLng(place.y, place.x) 
+            });
+
+            // 마커에 클릭이벤트를 등록합니다
+            kakao.maps.event.addListener(marker, 'click', function() {
+                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+                infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+                infowindow.open(map, marker);
+            });
+        }
+    </script>
+</body>
+</html>

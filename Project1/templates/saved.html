@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="icon" href="./static/images/bob.ico">
+    <title>Saved Items</title>
+    <style>
+        /* (0718 MS 수정) grid-container 추가 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0px;
+        }
+         /*  */
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 16px;
+            margin: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            margin: 0 0 8px;
+        }
+        .card p {
+            margin: 0 0 4px;
+        }
+        /* (0718 MS 수정) h1 추가. result와 동일하도록 */
+        h1 {
+            color: #f19011;
+            text-align: center;
+            display: block;
+        }
+
+            /* 헤드쪽 */
+    .home-head {
+      height: 80px;
+      border-bottom: 1.5px solid rgb(217, 217, 217);
+      display: flex;
+      justify-content: space-between;
+    }
+    .home-head h1 {
+      color: rebeccapurple;
+    }
+
+    .home-head #head-box1 {
+      width: 150px;
+      /* float: left; */
+    }
+
+    .home-head #head-box2 {
+      width: 500px;
+    }
+    .home-head #head-box2 a {
+      color: rgb(51, 0, 51);
+      font-weight: bold;
+    }
+
+    .home-head #head-box1 .home-image {
+      width: 150px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      background-color: white;
+    }
+    </style>
+</head>
+<body>
+    <div class="home-head">
+        <div id="head-box1">
+          <a href="{{ url_for('index') }}">
+          <img class="home-image" src="./static/images/setthetable.png">
+          </a>
+        </div>
+        <div id="head-box2">
+          <a href="{{ url_for('saved') }}">찜리스트</a>
+          <a href="javascript:history.back()">뒤로가기</a>
+        </div>
+      </div>
+    <div class="grid-container"><!--(0718 MS 수정) result와의 통일성 위해 클래스 추가-->
+        {% if saved_results %}
+            {% for result in saved_results %}
+                <div class="card">
+                    <h2>{{ result.ShopName }}</h2><!--(0718 MS 수정) result와 동일한 내용으로 제시-->
+                    <p><strong>Rate:</strong> {{ result.ShopRating }}</p>
+                    <p><strong>Reviews:</strong> {{ result.Reviews }}</p>
+                    <p><strong>Region:</strong> {{ result.Location }}</p>
+                    <p><strong>Location:</strong> {{ result.Location_catchtable }}</p>
+                    <p><strong>Category:</strong> {{ result.Category_catchtable }}</p>
+                    <p><strong>Price Range:</strong> {{ result.LunchDinner }}</p><!--(0718 MS 수정) result와 동일한 내용으로 제시-->
+    
+                    <form method="POST" action="{{ url_for('unsave') }}">
+                        <input type="hidden" name="card_id" value="{{ result.id }}">
+                        <button type="submit">Unsave</button>
+                    </form>
+                    <form method="GET" action="{{ url_for('map_view', id=result.id) }}">
+                        <button type="submit">상세보기</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No saved items found.</p>
+        {% endif %}
+        </div>
+    </body>
+    </html>
+</html>

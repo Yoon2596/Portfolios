@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="icon" href="./static/images/bob.ico">
+    <title>SetTheTable</title>
+</head>
+<style>
+    .card {
+        width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 16px;
+        margin: 16px;
+        /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+        cursor: pointer;
+        
+    }
+    .card h2 {
+        margin: 0 0 8px;
+    }
+    .card p {
+        margin: 0 0 4px;
+    }
+
+    .outer {
+        /* border: 6px solid blue; */
+        width: 600px;
+        height: 500px;
+        overflow-x: hidden;
+        margin-top: 50px;
+        margin-left: 10.5%;
+    }
+
+    .inner-list {
+        display: flex;
+        transition: .3s ease-out;
+        height: 100%;
+    }
+
+    #inner {
+        border: 6px solid rgb(217, 217, 217);
+        padding: 0 16px;
+    }
+
+    /* 룰렛 */
+    .r-wrap {
+      margin-top: -550px;
+      margin-left: 730px;
+      margin-bottom: 40px;
+    }
+
+    .header {
+      /* padding: 40px; */
+      color: red;
+      margin: auto;
+      margin-bottom: 40px;
+    }
+
+    .header p {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .wheel {
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    .center-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 60px;
+      background-color: #fff;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .triangle {
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 30px solid red;
+      position: absolute;
+      top: 50%;
+      right: -145%;
+      transform: translateY(-50%);
+    }
+
+    .inputArea {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .inputArea input, .inputArea button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .inputArea button {
+      margin-left: 10px;
+    }
+
+    #add_button{
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    /* wrap */
+    .wrap {
+      width: 100%;
+      background: url(./static/images/back4.jpg) no-repeat center fixed;
+      background-size: cover;
+      padding-bottom: 5%;
+    }
+
+    /* 헤드쪽 */
+    .home-head {
+      height: 80px;
+      border-bottom: 1.5px solid rgb(217, 217, 217);
+      display: flex;
+      justify-content: space-between;
+    }
+    .home-head h1 {
+      color: rebeccapurple;
+    }
+
+    .home-head #head-box1 {
+      width: 150px;
+      /* float: left; */
+    }
+
+    .home-head #head-box2 {
+      width: 500px;
+    }
+    .home-head #head-box2 a {
+      color: rgb(51, 0, 51);
+      font-weight: bold;
+    }
+
+    .home-head #head-box1 .home-image {
+      width: 150px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      background-color: white;
+    }
+    /* 지역선택 */
+    
+    .wrap .checkbox-wrap {
+      width: 1100px;
+      margin: auto;
+      /* background-color: violet; */
+    }
+
+    .wrap .checkbox-wrap .checkbox-title {
+      margin-top: 10px;
+      font-size: 30px;
+    }
+
+    .wrap .checkbox-wrap .location-box {
+      display: flex;
+      justify-content: start;
+      border-top: 2px solid black;
+    }
+    /* 음식 카테고리 선택 */
+    .wrap .checkbox-wrap .food-box {
+      display: flex;
+      justify-content: start;
+      border-top: 2px solid black;
+    }
+
+    .checkbox-name {
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .checkbox-name2 {
+      margin-right: 12px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    /* 가격대 */
+    .wrap .checkbox-wrap .price-box {
+      display: flex;
+      justify-content: start;
+      border-top: 2px solid black;
+    }
+
+    .wrap .checkbox-wrap .price-box .price-margin {
+      display: flex;
+      justify-content: start;
+      margin-top: 13px;
+    }
+
+    #checkbox-submit {
+      text-align: center;
+    }
+    
+    /* 체크박스 버튼 */
+    #checkbox-button {
+      width: 100px;
+      height: 40px;
+      margin-top: 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      background-color: orange;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.934);
+    }
+
+    #checkbox-button:hover {
+      background-color: #fff;
+      border: 2px solid orange;
+      color: orange;
+      transition: 1s;
+    }
+
+    .food-banner-roulette {
+      width: 500px;
+      border-radius: 15px;
+      background-color: rgb(240, 240, 240, 0.7);
+      border: 2px solid black;
+      text-align: center;
+    }
+
+    .food-banner-roulette2 {
+      width: 500px;
+      margin-left: 18.5%;
+      border-radius: 15px;
+      background-color: rgb(240, 240, 240, 0.7);
+      border: 2px solid black;
+      text-align: center;
+    }
+
+    .banner-wrap-roulette {
+      width: 100%;
+    }
+
+    .banner-wrap {
+      width: 1300px;
+      margin-top: 50px;
+      margin-left: 13.2%;
+      display: flex;
+    }
+
+    .button-list {
+      width: 160px;
+      margin-left: 23%;
+      /* background-color: red; */
+    }
+
+    .button-left {
+      width: 75px;
+      height: 35px;
+      border-radius: 6px;
+      background-color: rgb(241, 79, 79);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.934);
+    }
+
+    .button-left:hover {
+      background-color: white;
+      color: rgb(241, 79, 79);
+      border: 2px solid rgb(241, 79, 79);
+      transition: 1s;
+    }
+
+    .button-right {
+      width: 75px;
+      height: 35px;
+      border-radius: 6px;
+      background-color: rgb(118, 218, 118);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.934);
+    }
+
+    .button-right:hover {
+      background-color: white;
+      color: rgb(118, 218, 118);
+      border: 2px solid rgb(118, 218, 118);
+      transition: 1s;
+    }
+
+    #add_button {
+      font-weight: bold;
+      background-color: rgb(73, 94, 231);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.934);
+    }
+    #add_button:hover {
+      background-color: white;
+      color: rgb(73, 94, 231);
+      border: 2px solid rgb(73, 94, 231);
+      transition: 1s;
+    }
+    /* 레인보우 */
+    .rainbow {
+      background-image: linear-gradient(90deg, red, orange, yellow, green, blue, navy, purple);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-size: 40px;
+    }
+</style>
+<body>
+    <div class="home-head">
+      <div id="head-box1">
+        <a href="{{ url_for('index') }}">
+        <img class="home-image" src="./static/images/setthetable.png">
+        </a>
+      </div>
+      <div id="head-box2">
+        <a href="{{ url_for('saved') }}">찜리스트</a>
+      </div>
+    </div>
+    <div class="wrap">
+      <form method="GET" action="{{ url_for('search') }}">
+        <div class="checkbox-wrap">
+          <label for="location" class="checkbox-title"><strong>지역</strong></label>
+          <div class="location-box">
+            {% for loc in locations %}
+              <p class="checkbox-name"><input type="checkbox" name="location" value="{{ loc }}">{{ loc }}</p>
+            {% endfor %}
+          </div>
+        </div>
+          <br> <!--MS 추가. 여기서부터 (아래) -->
+          <div class="checkbox-wrap">
+            <label for="food_type" class="checkbox-title"><strong>음식 카테고리</strong></label>
+            <div class="food-box">
+              {% for food_type in food_types %}
+                  <p class="checkbox-name"><input type="checkbox" name="food_type" value="{{ food_type }}"> {{ food_type }}</p>
+              {% endfor %} <!--MS 추가. 여기서까지-->
+            </div>
+          </div>
+          <br>
+          <div class="checkbox-wrap">
+            <label for="food_type" class="checkbox-title"><strong>가격대 & 시간대</strong></label>
+            <div class="price-box">
+              <div class="price-margin">
+                <label for="min_price">최소 가격</label>
+                <input class="checkbox-name2" type="text" name="min_price" value="{{ request.args.get('min_price', '') }}"><br>
+                <label for="max_price">최대 가격</label>
+                <input class="checkbox-name2" type="text" name="max_price" value="{{ request.args.get('max_price', '') }}"><br>
+                <label for="meal_choice">Meal Choice:</label>
+                <select class="checkbox-name2" name="meal_choice">
+                    <option value="점심" {% if request.args.get('meal_choice') == '점심' %}selected{% endif %}>점심</option>
+                    <option value="저녁" {% if request.args.get('meal_choice') == '저녁' %}selected{% endif %}>저녁</option>
+                </select>
+              </div>
+            </div>
+            <div id="checkbox-submit">
+              <span><input id="checkbox-button" type="submit" value="검색"></span>
+            </div>
+          </div>
+        <div class="banner-wrap-roulette">
+          <div class="banner-wrap">
+            <div class="food-banner-roulette">
+              <h2><strong><span class="rainbow">음식점 홍보</span></strong></h2>
+            </div>
+            <div class="food-banner-roulette2">
+              <h2><strong><span class="rainbow">무작위 룰렛</span></strong></h2>
+            </div>
+          </div>
+        </div>
+          <div class="outer">
+              <div class="inner-list">
+                  {% for result in results %}
+                  <form method="POST" action="{{ url_for('save') }}">
+                    <input type="hidden" name="card_id" value="{{ result.id }}">
+                  </form>
+                  <div class="card" id="inner">
+                      <h2>{{ result.ShopName }}</h2>
+                      <p><strong>Rate:</strong> {{ result.ShopRating }}</p>
+                      <p><strong>Reviews:</strong> {{ result.Reviews }}</p>
+                      <p><strong>Address:</strong> {{ result.Address }}</p>
+                      <p><strong>Category:</strong> {{ result.Category_catchtable }}</p>
+                      <p><strong>PriceRange:</strong> {{ result.LunchDinner }}</p>
+                      <p><strong>Description:</strong> {{ result.Description }}</p>
+                      <form method="POST" action="{{ url_for('save') }}">
+                          <input type="hidden" name="card_id" value="{{ result.id }}">
+                          <button type="submit">Save</button>
+                      </form>
+                  </div>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="r-wrap">
+            <div class="header">
+                <p id="winner">결과</p>
+            </div>
+            <div class="wheel">
+                <canvas id="canvas" width="350" height="350"></canvas>
+                <div class="center-circle" onclick="spin()">
+                <div class="triangle"></div>
+                </div>
+            </div>
+            <div class="inputArea">
+                <input type="text" id="inputItem" placeholder="원하는 음식을 입력">
+                <button id="add_button" onclick="addItem()">클릭</button>
+            </div>
+        </div>
+        <div class="button-list">
+          <button class="button-left">← Left</button>
+          <button class="button-right">Right →</button>
+      </div>
+      </form>
+    </div>
+    
+</body>
+<script>
+    /* div사이즈 동적으로 구하기 */
+    const outer = document.querySelector('.outer');
+    const innerList = document.querySelector('.inner-list');
+    const inners = document.querySelectorAll('#inner');
+    let currentIndex = 0; // 현재 슬라이드 화면 인덱스
+    
+    inners.forEach((inner) => {
+      inner.style.width = `${outer.clientWidth}px`; // inner의 width를 모두 outer의 width로 만들기
+    })
+    
+    innerList.style.width = `${outer.clientWidth * inners.length}px`; // innerList의 width를 inner의 width * inner의 개수로 만들기
+    
+    /*
+      버튼에 이벤트 등록하기
+    */
+    const buttonLeft = document.querySelector('.button-left');
+    const buttonRight = document.querySelector('.button-right');
+    
+    buttonLeft.addEventListener('click', () => {
+      currentIndex--;
+      currentIndex = currentIndex < 0 ? 0 : currentIndex; // index값이 0보다 작아질 경우 0으로 변경
+      innerList.style.marginLeft = `-${582 * currentIndex}px`; // index만큼 margin을 주어 옆으로 밀기
+      clearInterval(interval); // 기존 동작되던 interval 제거
+      interval = getInterval(); // 새로운 interval 등록
+    });
+    
+    buttonRight.addEventListener('click', () => {
+      currentIndex++;
+      currentIndex = currentIndex >= inners.length ? inners.length - 1 : currentIndex; // index값이 inner의 총 개수보다 많아질 경우 마지막 인덱스값으로 변경
+      innerList.style.marginLeft = `-${582 * currentIndex}px`; // index만큼 margin을 주어 옆으로 밀기
+      clearInterval(interval); // 기존 동작되던 interval 제거
+      interval = getInterval(); // 새로운 interval 등록
+    });
+    
+    /*
+    주기적으로 화면 넘기기
+    */
+    const getInterval = () => {
+      return setInterval(() => {
+        currentIndex++;
+        currentIndex = currentIndex >= inners.length ? 0 : currentIndex;
+        innerList.style.marginLeft = `-${582 * currentIndex}px`;
+      }, 5000);
+    }
+    
+    let interval = getInterval(); // interval 등록
+    </script>
+    <script>
+        function randomColor() {
+          const r = Math.floor(Math.random() * 255);
+          const g = Math.floor(Math.random() * 255);
+          const b = Math.floor(Math.random() * 255);
+          return { r, g, b };
+        }
+      
+        function toRad(deg) {
+          return deg * (Math.PI / 180.0);
+        }
+      
+        function randomRange(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+      
+        function easeOutSine(x) {
+          return Math.sin((x * Math.PI) / 2);
+        }
+      
+        function getPercent(input, min, max) {
+          return (((input - min) * 100) / (max - min)) / 100;
+        }
+      
+        function rgb(r, g, b) {
+          return `rgb(${r}, ${g}, ${b})`;
+        }
+      
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const width = canvas.width;
+        const height = canvas.height;
+      
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = width / 2;
+      
+        let items = [];
+      
+        let currentDeg = 0;
+        let step = 360 / items.length;
+        let colors = [];
+        for (let i = 0; i < items.length; i++) {
+          colors.push(randomColor());
+        }
+      
+        function addItem() {
+          const newItem = document.getElementById('inputItem').value;
+          if (newItem) {
+            items.push(newItem);
+            document.getElementById('inputItem').value = '';
+            createWheel();
+          }
+        }
+      
+        function createWheel() {
+          step = 360 / items.length;
+          colors = [];
+          for (let i = 0; i < items.length; i++) {
+            colors.push(randomColor());
+          }
+          draw();
+        }
+      
+        draw();
+      
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, toRad(0), toRad(360));
+          ctx.fillStyle = rgb(33, 33, 33);
+          ctx.lineTo(centerX, centerY);
+          ctx.fill();
+      
+          let startDeg = currentDeg;
+          for (let i = 0; i < items.length; i++, startDeg += step) {
+            let endDeg = startDeg + step;
+      
+            let color = colors[i];
+            let colorStyle = rgb(color.r, color.g, color.b);
+      
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius - 2, toRad(startDeg), toRad(endDeg));
+            ctx.closePath();
+            ctx.fillStyle = colorStyle;
+            ctx.fill();
+            ctx.stroke();
+      
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(toRad((startDeg + endDeg) / 2));
+            ctx.textAlign = "center";
+            ctx.fillStyle = (color.r > 150 || color.g > 150 || color.b > 150) ? "#000" : "#fff";
+            ctx.font = "bold 24px serif";
+            ctx.fillText(items[i], radius / 1.5, 0);
+            ctx.restore();
+      
+            if (startDeg % 360 < 360 && startDeg % 360 > 270 && endDeg % 360 > 0 && endDeg % 360 < 90) {
+              document.getElementById("winner").innerHTML = items[i];
+            }
+          }
+        }
+      
+        let speed = 0;
+        let maxRotation = randomRange(360 * 3, 360 * 6);
+        let pause = false;
+      
+        function animate() {
+          if (pause) {
+            return;
+          }
+          speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * 20;
+          if (speed < 0.01) {
+            speed = 0;
+            pause = true;
+          }
+          currentDeg += speed;
+          draw();
+          window.requestAnimationFrame(animate);
+        }
+      
+        function spin() {
+          if (speed !== 0) {
+            return;
+          }
+          currentDeg = 0;
+          maxRotation = randomRange(360 * 3, 360 * 6);
+          pause = false;
+          window.requestAnimationFrame(animate);
+        }
+      </script>
+
+</html>
