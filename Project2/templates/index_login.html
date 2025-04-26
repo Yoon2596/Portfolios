@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교통사고 법률 상담 챗봇</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+        }
+        body {
+            min-width: 393px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 0px 0px 0px 0px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            height: calc(100vh);
+            position: fixed;
+            left: 0;
+            transition: transform 0.2s ease;
+            top:-7px;
+        }
+        .sidebar.closed {
+            transform: translateX(-250px);
+        }
+        .sidebar h2 {
+            padding-top: 50px; /* 상단에 여백 추가 */
+            font-size: 1.5em;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            position: relative;
+            padding: 30px 10px 10px 10px;
+            margin-bottom: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .sidebar ul li:hover {
+            background-color: #007BFF;
+            color: #fff;
+        }
+        .search-date {
+            font-size: 0.8em;
+            color: #666;
+            position: absolute;
+            top: 5px;
+            left: 10px;
+        }
+        .delete-log {
+            background-color: transparent;
+            border: none;
+            color: #FF0000;
+            cursor: pointer;
+            font-size: 1.2em;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .content {
+            flex: 1;
+            padding: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease;
+        }
+        .content.shifted {
+            margin-left: 0;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: calc(110vh - 115px);
+            padding: 20px 0px 0px 0px;
+            top: 44px;
+        }
+        h1 {
+            font-size: 2em; 
+            color: #007BFF; 
+            text-align: center; 
+            margin: 15px 0;
+        }
+        p {
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #messages {
+            flex: 1;
+            border-top: 1px solid #ddd;
+            padding: 25px 25px 0px 25px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .message-container {
+            min-width: 393px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message-container .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        .user {
+            color: #007BFF;
+        }
+        .bot {
+            color: #28a745;
+        }
+        form {
+            display: flex;
+            padding: 10px;
+            background-color: #f4f4f9;
+        }
+        #input {
+            width: 150px; 
+            flex: 1;
+            min-width: 100px;
+            padding: 3px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 1em;
+            outline: none;
+        }
+        #input:focus {
+            border-color: #007BFF;
+        }
+        #submit, #print {
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1em;
+            cursor: pointer;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: #007BFF;
+        }
+        #submit:hover {
+            background: #0056b3;
+        }
+        #print {
+            background: #28a745;
+        }
+        #print:hover {
+            background: #218838;
+        }
+        #upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1em;
+            cursor: pointer;
+            margin-right: 10px;
+            color: #fff;
+            background: #007BFF;
+        }
+        #upload-label:hover {
+            background: #0056b3;
+        }
+        #upload {
+            display: none;
+        }
+        #new-chat {
+            display: inline-block;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            margin-left: 113px;
+            margin-top:15px;
+        }
+        #clear-history {
+            margin-top: 10px;
+            background-color: #FF0000;
+            color: #FFF;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            margin-left: 33px;
+        }
+        #clear-history:hover {
+            background-color: #CC0000;
+        }
+        #sidebar-toggle {
+            width: 30px;
+            height: 24px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 3h24v2h-24v-2zm0 7h24v2h-24v-2zm0 7h24v2h-24v-2z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            position: fixed;
+            top: 18px;
+            left: calc(100% - 165px); /* 예시: 오른쪽에서 310px 떨어진 위치로 조정 */
+        }
+        #login-button {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #login-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 로딩 아이콘 설정 */
+        #loading-icon {
+            display: none;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            color: #007BFF;
+        }
+
+        /* 아이폰 14 프로에 맞춘 미디어 쿼리 */
+        @media only screen and (min-width: 393px) and (max-width: 393px) and (orientation: portrait) {
+            .sidebar {
+                width: 200px;
+            }
+            .content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+        }
+
+        @media only screen and (min-width: 852px) and (max-width: 852px) and (orientation: landscape) {
+            .sidebar {
+                width: 200px;
+            }
+            .content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+        }
+        #welcome-message {
+            position: fixed;
+            top: 10px;
+            right: 7px;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #585858;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            display: flex;
+            flex-direction: row;
+        }
+        #logout-button {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #logout-button i {
+            margin-right: 5px;
+        }
+        #logout-button:hover {
+            background-color: #C70039;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div id="welcome-message">
+            <button id="logout-button"></i> Log Out</button>
+        </div>
+        <button id="sidebar-toggle"></button>
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <h2>검색 기록</h2>
+        <ul id="search-history"></ul>
+        <div id="new-chat" title="New Chat"><img src="static/image/plus-circle.png" alt="PNG Image"></div>
+        <div id="moveMe" style="position: absolute; top: 90vh; left: 80px;"><img src="static/image/user.png" alt="PNG Image" style="position: absolute; top: 0px; left: -40px;">{{ nickname }}님 반갑습니다.</div>
+    </div>
+    <div class="content" id="content">
+        <div class="container">
+            <h1>교통사고 법률 상담 챗봇</h1>
+            <p>안녕하세요! 교통사고에 대해 법률적 조언을 드릴 수 있는 변호사 챗봇입니다.</p>
+            <div id="chat">
+                <div id="messages"></div>
+                <form id="form" enctype="multipart/form-data">
+                    <label for="upload" id="upload-label"><i class="fas fa-upload"></i></label>
+                    <input type="file" id="upload" accept="video/*">
+                    <input type="text" id="input" placeholder="  사고 상황이나 질문을 입력하세요">
+                    <button type="submit" id="submit"><i class="fas fa-paper-plane"></i></button>
+                    <button type="button" id="print"><i class="fas fa-print"></i></button>
+                    <i id="loading-icon" class="fas fa-spinner fa-spin"></i>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        let chatLog = [];
+        let chatTitle = '';
+        let sessionStarted = false;
+        let firstTime = true;
+        let loading = false;
+
+        // 사이드바 토글 기능
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('closed');
+            content.classList.toggle('shifted');
+        });
+
+        // 파일 업로드 이벤트
+        document.getElementById('upload').addEventListener('change', function() {
+            const fileInput = document.getElementById('upload');
+            const messagesDiv = document.getElementById('messages');
+
+            if (fileInput.files.length > 0) {
+                const videoFile = fileInput.files[0];
+                const videoFileName = videoFile.name;
+
+                if (!sessionStarted) {
+                    chatTitle = '영상을 살피는 중입니다.';
+                    sessionStarted = true;
+                }
+
+                messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-robot icon bot"></i><div class="bot">영상을 살피는 중입니다. 잠시만 기다려주세요... </div></div>`;
+                showLoading();
+
+                const formData = new FormData();
+                formData.append('video', videoFile);
+
+                fetch('/ask', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    messagesDiv.innerHTML += formatResponse(data.answer);
+                    const lastFrame = data.lastFrame || '';
+                    if (lastFrame) {
+                        messagesDiv.innerHTML += `<img src="data:image/jpg;base64,${lastFrame}" alt="Last Frame">`;
+                    }
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                    chatLog.push({ question: videoFileName, answer: data.answer });
+                    saveChatLog();
+
+                    messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-robot icon bot"></i><div class="bot">추가 질문이 있으시다면 지금 말씀해주시면 됩니다.</div></div>`;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                    hideLoading();
+                })
+                .catch(error => {
+                    messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-exclamation-triangle icon bot"></i><div class="bot">오류가 발생했습니다: ${error}</div></div>`;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    hideLoading();
+                });
+            }
+        });
+
+        // 텍스트 입력 폼 제출 이벤트
+        document.getElementById('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (loading) return;
+
+            const input = document.getElementById('input');
+            const messagesDiv = document.getElementById('messages');
+            const question = input.value;
+
+            if (question.trim() !== "") {
+                input.value = '';
+                messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-user icon user"></i><div class="user">${question}</div></div>`;
+
+                if (!sessionStarted) {
+                    chatTitle = question.slice(0, 10);
+                    sessionStarted = true;
+                }
+
+                showLoading();
+
+                fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'question=' + encodeURIComponent(question)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    messagesDiv.innerHTML += formatResponse(data.answer);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                    chatLog.push({ question, answer: data.answer });
+                    saveChatLog();
+
+                    messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-robot icon bot"></i><div class="bot">추가 질문이 있으시다면 지금 말씀해주시면 됩니다.</div></div>`;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                    hideLoading();
+                })
+                .catch(error => {
+                    messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-exclamation-triangle icon bot"></i><div class="bot">오류가 발생했습니다: ${error}</div></div>`;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    hideLoading();
+                });
+            }
+        });
+
+        // 새로운 대화 세션 시작
+        document.getElementById('new-chat').addEventListener('click', function() {
+            chatLog = [];
+            sessionStarted = false;
+            firstTime = true;
+
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+    
+            messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-robot icon bot"></i><div class="bot">새로운 대화 세션을 시작합니다. 무엇을 도와드릴까요?</div></div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            updateSearchHistory();
+        });
+
+        // 대화 로그 저장
+        function saveChatLog() {
+            if (chatLog.length > 0) {
+                const timestamp = new Date().toISOString();
+                let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        
+                const existingIndex = searchHistory.findIndex(item => item.title === chatTitle);
+        
+                if (existingIndex !== -1) {
+                    searchHistory[existingIndex] = { title: chatTitle, log: chatLog, timestamp };
+                } else {
+                    searchHistory.push({ title: chatTitle, log: chatLog, timestamp });
+                }
+        
+                localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                updateSearchHistory();
+            }
+        }
+
+        // 검색 기록 업데이트
+        function updateSearchHistory() {
+            const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            const searchHistoryList = document.getElementById('search-history');
+            searchHistoryList.innerHTML = '';
+
+            searchHistory.forEach(function(record, index) {
+                const date = new Date(record.timestamp);
+                const formattedDate = isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
+
+                let li = document.createElement('li');
+                li.innerHTML = `<div class="search-date">${formattedDate}</div><div><strong>${record.title}</strong></div>`;
+                li.classList.add('search-item');
+
+                let deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-log');
+                deleteButton.innerHTML = '×';
+                deleteButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    deleteLog(index);
+                });
+
+                li.appendChild(deleteButton);
+                li.addEventListener('click', function() {
+                    performSearch(record.log);
+                });
+                searchHistoryList.appendChild(li);
+            });
+        }
+
+        // 검색 기록 삭제
+        function deleteLog(index) {
+            let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            searchHistory.splice(index, 1);
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+            updateSearchHistory();
+        }
+
+        // 대화 기록 불러오기 및 계속하기
+        function performSearch(log) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+
+            chatLog = log;
+            sessionStarted = true;
+            chatTitle = log.length > 0 ? log[0].question.slice(0, 10) : '불러온 대화';
+
+            log.forEach(entry => {
+                messagesDiv.innerHTML += `<div class="message-container"><i class="fas fa-user icon user"></i><div class="user">${entry.question}</div></div>`;
+                messagesDiv.innerHTML += formatResponse(entry.answer);
+            });
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            messagesDiv.innerHTML += `<div class="message-container"><img src="static/image/한문철.png" alt="Robot" width="50" height="50" class="icon bot" />이전 대화를 불러왔습니다. 추가 질문이 있으시면 말씀해 주세요.</div></div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // 응답 메시지 포맷팅
+        function formatResponse(response) {
+            return `<div class="message-container"><img src="static/image/한문철.png" alt="Robot" width="50" height="50" class="icon bot" />${response.replace(/\n/g, '<br>')}</div></div>`;
+        }
+
+        // 로딩 상태 표시
+        function showLoading() {
+            loading = true;
+            document.getElementById('loading-icon').style.display = 'inline-block';
+            document.getElementById('submit').disabled = true;
+            document.getElementById('upload').disabled = true;
+        }
+
+        // 로딩 상태 해제
+        function hideLoading() {
+            loading = false;
+            document.getElementById('loading-icon').style.display = 'none';
+            document.getElementById('submit').disabled = false;
+            document.getElementById('upload').disabled = false;
+        }
+
+        // 로그아웃 버튼 이벤트
+        document.getElementById('logout-button').addEventListener('click', function() {
+            window.location.href = '/logout';
+        });
+
+        // 페이지 이탈 시 대화 로그 저장
+        window.addEventListener('beforeunload', saveChatLog);
+
+        // 인쇄 버튼 이벤트
+        document.getElementById('print').addEventListener('click', function() {
+            window.print();
+        });
+
+        // 페이지 로드 시 검색 기록 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSearchHistory();
+        });
+    </script>
+</body>
+</html>
