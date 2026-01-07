@@ -63,9 +63,9 @@
 ## 5. 프로젝트 결과
 
 1. 시연영상 링크
-   - [발표 영상](https://drive.google.com/file/d/1HFCJFNTSOjHTLDKpW4rxQSjOylAJC-5b/view?usp=drive_link)
-   - [시연 영상 1](https://drive.google.com/file/d/1bBW1ZUsoCTq6sN7nj2ZB5Bmfkn06N2Sy/view?usp=drive_link)
-   - [시연 영상 2](https://drive.google.com/file/d/1gkbfcKmzgTO9fqyefk9aTQppm9KmO_c_/view?usp=drive_link)
+   - [발표 영상](https://drive.google.com/file/d/1HFCJFNTSOjHTLDKpW4rxQSjOylAJC-5b/view?usp=drive_link)   (presentation link)
+   - [시연 영상 1](https://drive.google.com/file/d/1bBW1ZUsoCTq6sN7nj2ZB5Bmfkn06N2Sy/view?usp=drive_link) (Demonstration Video1)
+   - [시연 영상 2](https://drive.google.com/file/d/1gkbfcKmzgTO9fqyefk9aTQppm9KmO_c_/view?usp=drive_link) (Demonstration Video2)
 
 
 
